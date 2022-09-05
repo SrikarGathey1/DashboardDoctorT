@@ -11,3 +11,8 @@ def unique_id_compute(state, district, count):
     return uniqueID
 
 # print(unique_id_compute(7, 3, 8))
+# State - Number corresponding to the state the person is from.
+# District - Number corresponding to the district the person is from.
+# Count - The number of people in the database from the same state and district.
+# Checksum - Sum of all three values for checking and validating the ID.
+

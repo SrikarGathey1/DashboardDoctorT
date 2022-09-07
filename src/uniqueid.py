@@ -10,8 +10,8 @@ def unique_id_compute(state, year, count):
     uniqueID = stateStr + yearStr + orderStr + checksumStr
     return uniqueID
 
-print(unique_id_compute(24, 9, 37))
-
+print(unique_id_compute(19, 20, 44))
+# 01920004584
 
 
 # State - Number corresponding to the state the person is from.

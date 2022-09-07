@@ -1,22 +1,6 @@
 import sqlite3
 
 
-class Patient:
-    def __init__(self):
-        conn = sqlite3.connect("records.db")
-        self.c = conn.cursor()
-        
-    def insertRecord(self, uniqueID, name, email, state, dob):
-        self.c.execute("INSERT INTO patients VALUES(?, ?, ?, ?, ?)", (uniqueID, name, email, state, dob))
-
-    def displayTable(self):
-        self.c.execute("SELECT * FROM patients")
-        items = self.c.fetchall()
-        for item in items:
-            print(item)
-    
-    def deleteRecord(self, uniqueID):
-        self.c.execute("DELETE FROM patients WHERE uniqueID = ?", (uniqueID,))
 
 
 class State:
@@ -38,11 +22,6 @@ class State:
 
 connec = sqlite3.connect("records.db")
 cur = connec.cursor()
-p = Patient()
-# cursor.execute("ALTER TABLE patients ADD day number")
-cur.execute("UPDATE patients SET day = 17, month = 4, dob = 2000 WHERE state = 1")
-cur.execute("UPDATE patients SET day = 29, month = 9, dob = 1988 WHERE state = 8")
-cur.execute("UPDATE patients SET day = 25, month = 12, dob = 1967 WHERE state = 24")
-cur.execute("SELECT * FROM patients")
-print(cur.fetchall())
+cur.execute("DROP TABLE patients")
+connec.close()
         

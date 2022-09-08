@@ -15,7 +15,13 @@ class Patient:
         regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
         self.emailID = input("Enter the email id of the patient:")
         if re.fullmatch(regex, self.emailID):
-            flag = 1
+            self.password = input("Pick a password for your account:")
+            self.retype = input("Retype your password:")
+            if self.password == self.retype:
+                self.cur.execute("INSERT INTO account VALUES(?, ?)", (self.emailID, self.password))
+            else:
+                print("Passwords do not match")
+                return
         else:
             print("Invalid Email.")
             return
@@ -29,9 +35,11 @@ class Patient:
     
     def displayTable(self):
         self.cur.execute("SELECT * FROM PATIENTS")
-        items =self.cur.fetchall()
+        items = self.cur.fetchall()
         for item in items:
             print(item)
+        self.cur.execute("SELECT * FROM account")
+        print(self.cur.fetchall())
         self.conn.commit()
         self.conn.close()
         
@@ -69,3 +77,4 @@ class State:
 p = Patient()
 p.insertRecord()
 p.displayTable()
+

@@ -41,7 +41,13 @@ class Patient:
         self.cur.execute("SELECT * FROM account")
         print(self.cur.fetchall())
         self.conn.commit()
-        self.conn.close()
+
+    def removeRecord(self, uniqueID):
+        self.cur.execute("SELECT emailID FROM patients WHERE uniqueID = ?", (uniqueID,))
+        email = self.cur.fetchall()[0][0]
+        self.cur.execute("DELETE FROM account WHERE email = ?", (email,))
+        self.cur.execute("DELETE FROM patients WHERE uniqueID = ?", (uniqueID,))
+        self.conn.commit()
         
 
 
@@ -75,6 +81,7 @@ class State:
 #                    year INTEGER)""")
 # cursor.execute("SELECT * FROM patients")
 p = Patient()
-p.insertRecord()
+# p.insertRecord()
+p.removeRecord("023790585687")
 p.displayTable()
 

@@ -1,18 +1,30 @@
 import sqlite3
+from uniqueid import *
 
 class Patient:
     def __init__(self):
-        conn = sqlite3.connect("records.db")
-        self.cur = conn.cursor()
+        self.conn = sqlite3.connect("records.db")
+        self.cur = self.conn.cursor()
 
-    def insertRecord(self, uniqueID, firstName, lastName, emailID, stateName, day, month, year):
+    def insertRecord(self):
+        self.firstName = input("Enter the first name of the patient:")
+        self.lastName = input("Enter the last name of the patient:")
+        self.emailID = input("Enter the email id of the patient:")
+        self.stateName = input("Enter the State the patient is from:")
+        self.day = int(input("Enter the day of birth of the patient:"))
+        self.month = int(input("Enter the month of birth of the patient:"))
+        self.year = int(input("Enter the year of birth of the patient:"))
+        self.uniqueID = unique_id_compute(self.stateName, self.year, 6)
         self.cur.execute(""" INSERT INTO patients VALUES(?, ?, ?, ?, ?, ?, ?, ?)
-                        """, (uniqueID, firstName, lastName, emailID, stateName, day, month, year))
+                        """, (self.uniqueID, self.firstName, self.lastName, self.emailID, self.stateName, self.day, self.month, self.year))
     
     def displayTable(self):
         self.cur.execute("SELECT * FROM PATIENTS")
-        print(self.cur.fetchall())
-
+        items =self.cur.fetchall()
+        for item in items:
+            print(item)
+        self.conn.commit()
+        self.conn.close()
         
 
 
@@ -46,5 +58,5 @@ class State:
 #                    year INTEGER)""")
 # cursor.execute("SELECT * FROM patients")
 p = Patient()
-# p.insertRecord('01720000239', 'Srikar', 'Gade', 'venkatnaras123@gmail.com', 'Andhra Pradesh', 17, 4, 2000)
+# p.insertRecord()
 p.displayTable()

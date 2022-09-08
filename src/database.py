@@ -1,6 +1,8 @@
 import sqlite3
 from uniqueid import *
 from random import *
+import re
+
 
 class Patient:
     def __init__(self):
@@ -10,7 +12,13 @@ class Patient:
     def insertRecord(self):
         self.firstName = input("Enter the first name of the patient:")
         self.lastName = input("Enter the last name of the patient:")
+        regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
         self.emailID = input("Enter the email id of the patient:")
+        if re.fullmatch(regex, self.emailID):
+            flag = 1
+        else:
+            print("Invalid Email.")
+            return
         self.stateName = input("Enter the State the patient is from:")
         self.day = int(input("Enter the day of birth of the patient:"))
         self.month = int(input("Enter the month of birth of the patient:"))
@@ -59,5 +67,5 @@ class State:
 #                    year INTEGER)""")
 # cursor.execute("SELECT * FROM patients")
 p = Patient()
-# p.insertRecord()
+p.insertRecord()
 p.displayTable()

@@ -1,5 +1,6 @@
 import sqlite3
 from uniqueid import *
+from random import *
 
 class Patient:
     def __init__(self):
@@ -14,7 +15,7 @@ class Patient:
         self.day = int(input("Enter the day of birth of the patient:"))
         self.month = int(input("Enter the month of birth of the patient:"))
         self.year = int(input("Enter the year of birth of the patient:"))
-        self.uniqueID = unique_id_compute(self.stateName, self.year, 6)
+        self.uniqueID = unique_id_compute(self.stateName, self.year, randint(1, 1000))
         self.cur.execute(""" INSERT INTO patients VALUES(?, ?, ?, ?, ?, ?, ?, ?)
                         """, (self.uniqueID, self.firstName, self.lastName, self.emailID, self.stateName, self.day, self.month, self.year))
     

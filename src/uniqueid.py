@@ -10,7 +10,7 @@ def unique_id_compute(state, year, count):
     uniqueID = stateStr + yearStr + orderStr + checksumStr
     return uniqueID
 
-print(unique_id_compute(19, 20, 44))
+print(unique_id_compute(17, 20, 1))
 # 01920004584
 
 

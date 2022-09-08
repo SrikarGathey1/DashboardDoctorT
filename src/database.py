@@ -1,6 +1,19 @@
 import sqlite3
 
+class Patient:
+    def __init__(self):
+        conn = sqlite3.connect("records.db")
+        self.cur = conn.cursor()
 
+    def insertRecord(self, uniqueID, firstName, lastName, emailID, stateName, day, month, year):
+        self.cur.execute(""" INSERT INTO patients VALUES(?, ?, ?, ?, ?, ?, ?, ?)
+                        """, (uniqueID, firstName, lastName, emailID, stateName, day, month, year))
+    
+    def displayTable(self):
+        self.cur.execute("SELECT * FROM PATIENTS")
+        print(self.cur.fetchall())
+
+        
 
 
 class State:
@@ -20,8 +33,18 @@ class State:
         self.cur.execute("SELECT * FROM states")
         print(self.cur.fetchall())
 
-connec = sqlite3.connect("records.db")
-cur = connec.cursor()
-cur.execute("DROP TABLE patients")
-connec.close()
-        
+
+
+# cursor.execute("""  CREATE TABLE patients(
+#                    uniqueID TEXT PRIMARY KEY,
+#                    firstName TEXT,
+#                    lastName TEXT,
+#                    emailID TEXT,
+#                    stateName TEXT,
+#                    day INTEGER,
+#                    month INTEGER,
+#                    year INTEGER)""")
+# cursor.execute("SELECT * FROM patients")
+p = Patient()
+# p.insertRecord('01720000239', 'Srikar', 'Gade', 'venkatnaras123@gmail.com', 'Andhra Pradesh', 17, 4, 2000)
+p.displayTable()

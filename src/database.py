@@ -15,13 +15,7 @@ class Patient:
         regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
         self.emailID = input("Enter the email id of the patient:")
         if re.fullmatch(regex, self.emailID):
-            self.password = input("Pick a password for your account:")
-            self.retype = input("Retype your password:")
-            if self.password == self.retype:
-                self.cur.execute("INSERT INTO account VALUES(?, ?)", (self.emailID, self.password))
-            else:
-                print("Passwords do not match")
-                return
+            flag = 1
         else:
             print("Invalid Email.")
             return
@@ -43,9 +37,6 @@ class Patient:
         self.conn.commit()
 
     def removeRecord(self, uniqueID):
-        self.cur.execute("SELECT emailID FROM patients WHERE uniqueID = ?", (uniqueID,))
-        email = self.cur.fetchall()[0][0]
-        self.cur.execute("DELETE FROM account WHERE email = ?", (email,))
         self.cur.execute("DELETE FROM patients WHERE uniqueID = ?", (uniqueID,))
         self.conn.commit()
         

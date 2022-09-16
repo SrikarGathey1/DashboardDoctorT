@@ -51,7 +51,7 @@ frame = customtkinter.CTkFrame(root, width = 750, height = 750, bg_color = "blac
 
 # frame.columnconfigure(0, weight = 1)
 frame.columnconfigure(1, weight = 2)
-frame.rowconfigure(0, pad = 2)
+
 
 
 # Title Label

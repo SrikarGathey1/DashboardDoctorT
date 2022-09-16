@@ -1,3 +1,4 @@
+from telnetlib import DO
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
@@ -7,7 +8,9 @@ from PIL import ImageFont
 from turtle import color
 import customtkinter
 import sqlite3
-import re
+from re import fullmatch
+from re import compile
+from re import match
 
 
 class App:
@@ -33,12 +36,15 @@ class App:
             if user in account:
                 flag = 1
                 if pwd == account[1]:
-                    print("Login Successful.")          
+                    SuccessLabel = customtkinter.CTkLabel(self.frame, text = "Login Successful", bg_color = "black", text_color = "red")
+                    SuccessLabel.grid(column = 0, columnspan = 2, row = 4, pady = (15, 0))          
                 else:
-                    print("Wrong Password.")
-                break
+                    InvalidLabel = customtkinter.CTkLabel(self.frame, text = "Invalid Username or Password.", bg_color = "black", text_color = "red")
+                    InvalidLabel.grid(column = 0, columnspan = 2, row = 4, pady = (15, 0)) 
+                    break
         if flag == 0:
-            print("Record not Found.")
+            FlagLabel = customtkinter.CTkLabel(self.frame, text = "Invalid Username or Password.", bg_color = "black", text_color = "red")
+            FlagLabel.grid(column = 0, columnspan = 2, row = 4, pady = (15, 0)) 
         conn.close()
     
 
@@ -49,7 +55,7 @@ class App:
         self.pwd1 = self.pwd.get()
         self.ret1 = self.retype.get() 
 
-        self.regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+        self.regex = compile("([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+")
 
         self.conn = sqlite3.connect("records.db")
         self.cursor = self.conn.cursor()
@@ -60,17 +66,18 @@ class App:
                 ExistLabel = customtkinter.CTkLabel(self.frame, text = "This Email Is Already Registered. Try Logging In.", bg_color = "black", text_color = "red")
                 ExistLabel.grid(column = 0, columnspan = 2, row = 4)
                 return 
-            elif (self.re.fullmatch(self.regex, self.usr1)) != 1:
-                FullMatch = customtkinter.CTkLabel(self.frame, text = "Invalid Email ID. Enter A Valid Email ID to continue.", bg_color = "black", text_color = "red")
-                FullMatch.grid(column = 0, columnspan = 2, row = 4)
-                return
-            elif self.pwd1 != self.ret1:
-                PassLabel = customtkinter.CTkLabel(self.frame, text = "Passwords Do Not Match.", bg_color = "black", text_color = "red")
-                PassLabel.grid(column = 0, columnspan = 2, row = 4)
-                return
-        self.cursor.execute("INSERT INTO account VALUES(?, ?)", (self.usr1, self.pwd1))
-        self.conn.commit()
-        self.conn.close()
+        if fullmatch(self.regex, self.usr1):
+            DoneLabel = customtkinter.CTkLabel(self.frame, text = "Registration Successful", bg_color = "black", text_color = "red")
+            DoneLabel.grid(column = 0, columnspan = 2, row = 4)
+            self.cursor.execute("INSERT INTO account VALUES(?, ?)", (self.usr1, self.pwd1))
+            self.conn.commit()
+            self.conn.close()
+        else:
+            InvalidLabel = customtkinter.CTkLabel(self.frame, text = "Invalid Email Address", bg_color = "black", text_color = "red")
+            InvalidLabel.grid(column = 0, columnspan = 2, row = 4)
+        if self.pwd1 != self.ret1:
+            PassLabel = customtkinter.CTkLabel(self.frame, text = "Passwords Do Not Match.", bg_color = "black", text_color = "red")
+            PassLabel.grid(column = 0, columnspan = 2, row = 4)
 
     ###################### Login Page ##############################
 
@@ -88,15 +95,11 @@ class App:
 
         self.frame = customtkinter.CTkFrame(self.root, width = 750, height = 750, bg_color = "black")
 
-        # frame.columnconfigure(0, weight = 1)
-        self.frame.columnconfigure(1, weight = 2)
-        self.frame.rowconfigure(0, pad = 2)
-
 
         # Title Label
         self.TitleLabel = customtkinter.CTkLabel(self.frame, text = "Doctor T", text_color = "#0096FF")
-        self.TitleLabel.configure(font = ("PacFself.ont", 25))
-        self.TitleLabel.grid(column = 1, row = 1, pady = (25, 25), padx = (0, 275))
+        self.TitleLabel.configure(font = ("PacFont", 25))
+        self.TitleLabel.grid(column = 0, row = 1, columnspan = 2, pady = (25, 25))
 
 
         # Username and Entry Box
@@ -105,32 +108,24 @@ class App:
         self.username = customtkinter.CTkEntry(self.frame, width = 350)
         self.username.grid(column = 1, row = 2, pady = (25, 0), padx = (0, 100))
 
-        # Space between Username and Password
-        self.SpaceLabel = customtkinter.CTkLabel(self.frame, text = "")
-        self.SpaceLabel.grid(column = 0, row = 3)
 
         # Password and Entry Box
         self.Label2 = customtkinter.CTkLabel(self.frame, text = "Password")
-        self.Label2.grid(column = 0, row = 4, pady = (25, 0), padx = (25, 0))
+        self.Label2.grid(column = 0, row = 3, pady = (25, 0), padx = (25, 0))
         self.password = customtkinter.CTkEntry(self.frame, width = 350, show = "*")
-        self.password.grid(column = 1, row = 4, pady = (25, 0), padx = (0, 100))  
-
-        # Space between Password row and Bottom of the frame
-        self.SpaceLabel = customtkinter.CTkLabel(self.frame, text = "\n")
-        self.SpaceLabel.grid(row = 5, column = 0)
-        self.SpaceLabel.grid(row = 6, column = 0)
+        self.password.grid(column = 1, row = 3, pady = (25, 0), padx = (0, 100))  
 
         # Login Button
         self.Button1 = customtkinter.CTkButton(self.frame, text = "Log In", command = self.loginUser)
-        self.Button1.grid(row = 7, column = 0, pady = (20, 40), padx = (150, 0))
+        self.Button1.grid(row = 5, column = 0, pady = (50, 40), padx = (150, 0), sticky = NE)
 
         # Register Button
         self.Button2 = customtkinter.CTkButton(self.frame, text = "Register", command = self.registerPage)
-        self.Button2.grid(row = 7, column = 1, pady = (20, 40), padx = (0, 100))
+        self.Button2.grid(row = 5, column = 1, pady = (50, 40))
 
         self.frame.pack(padx = 30, pady = 100)
         self.C.pack()
-        self.root.eval('tk::PlaceWindow . center')
+        # self.root.eval('tk::PlaceWindow . center')
 
     ##################### NEW USER REGISTRATION PAGE ##################################
 
@@ -187,7 +182,7 @@ class App:
 
         self.frame.pack(padx = 30, pady = 100)
         self.C.pack()
-        root.eval('tk::PlaceWindow . center')
+        # root.eval('tk::PlaceWindow . center')
 
 
 

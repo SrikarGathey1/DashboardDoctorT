@@ -29,6 +29,7 @@ c.execute("""CREATE TABLE IF NOT EXISTS patient_list(uniqueid TEXT PRIMARY KEY, 
 c.execute("SELECT * FROM patient_list")
 for item in c.fetchall():
     print(item)
+    break
 
 conn.commit()
 

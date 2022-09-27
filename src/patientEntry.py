@@ -50,6 +50,12 @@ class App:
         self.registerPatient(self.root)
     
 
+    def removeLabel(self, Label):
+        Label.grid_remove()
+ 
+    def showLabel(self, Label, x, y):
+        Label.grid(column = y, row = x, pady = (50, 0), padx = (20, 0))
+
     def otpMessage(self, reciever):
 
         self.otpgen = randint(100000, 999999)
@@ -102,59 +108,61 @@ class App:
         self.year1 = int(self.year.get())
         self.email1 = self.email.get()
 
+
         self.emailRegex = compile("([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+")
-        self.EmailErrorLabel = customtkinter.CTkLabel(self.secondFrame, text = "Invalid Email Address. Please Check.", bg_color = "#FF3131")
         if fullmatch(self.emailRegex, self.email.get()):
             self.email1 = self.email.get()
-            self.EmailErrorLabel.grid_remove()
+            self.removeLabel(self.EmailErrorLabel)
         else:
-            self.EmailErrorLabel.grid(row = 9, column = 18, columnspan = 2, pady = (50, 0), padx = (20, 0))
+            self.showLabel(self.EmailErrorLabel, 9, 18)      #row = 9, column = 18
             self.flag = 1
 
 
         self.phoneRegex = compile("^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$")
-        self.PhoneErrorLabel = customtkinter.CTkLabel(self.secondFrame, text = "Invalid Phone Number. Please Check.", bg_color = "#FF3131")
         if fullmatch(self.phoneRegex, self.phone.get()):
             self.phone1 = self.phone.get()
-            self.PhoneErrorLabel.grid_remove()
+            self.removeLabel(self.PhoneErrorLabel)
         else:
-            self.PhoneErrorLabel.grid(row = 5, column = 10, pady = (50, 0))
+            self.showLabel(self.PhoneErrorLabel, 5, 10)   # Phone Show row = 5, column = 10
             self.flag = 1
     
         self.weightRegex = compile("^([0-9]{2,3})")
-        self.WeightErrorLabel = customtkinter.CTkLabel(self.secondFrame, text = "Invalid Weight", bg_color = "#FF3131")
         if fullmatch(self.weightRegex, self.weight.get()):
             self.weight1 = self.weight.get()
-            self.WeightErrorLabel.grid_remove()
+            self.removeLabel(self.WeightErrorLabel)
         else:
-            self.WeightErrorLabel.grid(column = 10, row = 7, pady = (50, 0))
+            self.showLabel(self.WeightErrorLabel, 7, 10) # Weight SHOW column = 10, row = 7
             self.flag = 1
 
         self.uidaiRegex = compile("^[2-9]{1}[0-9]{11}$")
-        self.UidaiErrorLabel = customtkinter.CTkLabel(self.secondFrame, text = "Invalid Adhaar. Please Check.", bg_color = "#FF3131")
         if fullmatch(self.uidaiRegex, self.uidai.get()):
             self.uniqueid = "P" + str(self.uidai.get())
-            self.UidaiErrorLabel.grid_remove()
+            self.removeLabel(self.UidaiErrorLabel)
         else:
-            self.UidaiErrorLabel.grid(row = 6, column = 10, pady = (50, 0))
+            self.showLabel(self.UidaiErrorLabel, 6, 10)  # row = 6, column = 10
             self.flag = 1
 
 
         self.heightRegex = compile("^([0-9]{2,3})")
-        self.HeightErrorLabel = customtkinter.CTkLabel(self.secondFrame, text = "Invalid Height", bg_color = "#FF3131")
         if fullmatch(self.heightRegex, self.height.get()):
             self.height1 = self.height.get()
-            self.HeightErrorLabel.grid_remove()
+            self.removeLabel(self.HeightErrorLabel)
         else:
-            self.HeightErrorLabel.grid(row = 8, column = 10, pady = (50, 0))
+            self.showLabel(self.HeightErrorLabel, 8, 10)# row = 8, column = 10 
             self.flag = 1
 
         if self.radio_var.get() == 1:
             self.gender1 = self.gender1 + "Male"
+            self.removeLabel(self.GenderErrorLabel)
         elif self.radio_var.get() == 2:
             self.gender1 = self.gender1 + "Female"
+            self.removeLabel(self.GenderErrorLabel)
         elif self.radio_var.get() == 3:
             self.gender1 = self.gender1 + "Non-Binary"
+            self.removeLabel(self.GenderErrorLabel)
+        else: 
+            self.flag == 1
+            self.showLabel(self.GenderErrorLabel, 4, 12)
     
         if self.flag == 0:
             self.conn = sqlite3.connect("records.db")
@@ -178,7 +186,7 @@ class App:
             self.month.set("1")
             self.year.set("1970")
             self.radio_var.set(0)
-            self.ErrorLabel.grid_remove()
+
 
 
     def registerPatient(self, root):
@@ -243,15 +251,15 @@ class App:
 
         self.male = customtkinter.CTkRadioButton(self.secondFrame, text = "Male", variable = self.radio_var, value = 1)
         self.male.configure(text_font = (font1, 10))
-        self.male.grid(column = 6, row = 4, columnspan = 4, pady = (50, 0))
+        self.male.grid(column = 6, row = 4, columnspan = 2, pady = (50, 0))
 
         self.female = customtkinter.CTkRadioButton(self.secondFrame, text = "Female", variable = self.radio_var, value = 2)
         self.female.configure(text_font = (font1, 10))
-        self.female.grid(column = 10, row = 4, columnspan = 4, pady = (50, 0))
+        self.female.grid(column = 8, row = 4, columnspan = 2, pady = (50, 0))
 
         self.nonbinary = customtkinter.CTkRadioButton(self.secondFrame, text = "Non-Binary", variable = self.radio_var, value = 3)
         self.nonbinary.configure(text_font = (font1, 10))
-        self.nonbinary.grid(column = 14, row = 4, columnspan = 4, pady = (50, 0))
+        self.nonbinary.grid(column = 10, row = 4, columnspan = 2, pady = (50, 0))
 
         self.phoneLabel = customtkinter.CTkLabel(self.secondFrame, text = "Phone Number:")
         self.phoneLabel.configure(font = (font1, 12))
@@ -311,7 +319,15 @@ class App:
         self.CreateButton.grid(column = 10, row = 12, pady = (25, 0))
 
         self.BackButton = customtkinter.CTkButton(self.secondFrame, text = "Search Records", text_font = (font1, 10), command = lambda: self.searchPage())
-        self.BackButton.grid(column = 14, row = 12, pady = (25, 0))        
+        self.BackButton.grid(column = 14, row = 12, pady = (25, 0))       
+
+        self.EmailErrorLabel = customtkinter.CTkLabel(self.secondFrame, text = "Invalid Email Address. Please Check.", bg_color = "#FF3131")
+        self.PhoneErrorLabel = customtkinter.CTkLabel(self.secondFrame, text = "Invalid Phone Number. Please Check.", bg_color = "#FF3131")
+        self.WeightErrorLabel = customtkinter.CTkLabel(self.secondFrame, text = "Invalid Weight", bg_color = "#FF3131")
+        self.UidaiErrorLabel = customtkinter.CTkLabel(self.secondFrame, text = "Invalid Adhaar. Please Check.", bg_color = "#FF3131")
+        self.HeightErrorLabel = customtkinter.CTkLabel(self.secondFrame, text = "Invalid Height.", bg_color = "#FF3131")
+        self.GenderErrorLabel = customtkinter.CTkLabel(self.secondFrame, text = "Please pick the gender you identify with.", bg_color = "#FF3131")
+ 
 
 
 root = customtkinter.CTk()

@@ -28,11 +28,11 @@ c = conn.cursor()
 
 # c.execute("INSERT INTO patient_list VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", ("P984770498710", "venkatnaras123@gmail.com", "Srikar", "", "Gade", 9597216381, 76, 182, "Male", 17, 4, 2000))
 
-# c.execute("SELECT * FROM patient_list")
-# for item in c.fetchall():
-#  print(item)
+c.execute("SELECT * FROM patient_list")
+for item in c.fetchall():
+  print(item)
 
-c.execute("DELETE FROM patient_list WHERE email = ?", ("srikar.thinktankers@gmail.com", ))
+c.execute("DELETE FROM patient_list WHERE email != ?", ("venkatnaras123@gmail.com", ))
 
 c.execute("SELECT * FROM patient_list")
 for item in c.fetchall():

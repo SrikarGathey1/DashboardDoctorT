@@ -32,7 +32,7 @@ class App:
 
     def loginUser(self):
         flag = 0
-        conn = sqlite3.connect("records.db")
+        conn = sqlite3.connect("db\records.db")
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM account")
         user = self.username.get()
@@ -63,7 +63,7 @@ class App:
 
         self.regex = compile("([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+")
 
-        self.conn = sqlite3.connect("records.db")
+        self.conn = sqlite3.connect("db\records.db")
         self.cursor = self.conn.cursor()
         self.cursor.execute("SELECT * FROM account")
         records = self.cursor.fetchall()
@@ -129,7 +129,7 @@ class App:
             gender1 = "Non-Binary"
     
         if self.flag == 0:
-            self.conn = sqlite3.connect("records.db")
+            self.conn = sqlite3.connect("db\records.db")
             self.cursor = self.conn.cursor()
             self.cursor.execute("INSERT INTO patient_list VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)", (self.unique1, self.name1, self.phone1, self.weight1, self.height1, self.gender1, self.day1, self.month1, self.year1))
             self.conn.commit()
@@ -146,7 +146,7 @@ class App:
             widget.destroy()
 
         self.searchResults = []
-        self.conn = sqlite3.connect("records.db")
+        self.conn = sqlite3.connect("db\records.db")
         self.cursor = self.conn.cursor()
         self.cursor.execute("SELECT * FROM patient_list")
         self.items = self.cursor.fetchall()
@@ -195,7 +195,7 @@ class App:
         
         
         self.C = Canvas(self.root, bg="blue", height=250, width=300)
-        self.filename = PhotoImage(file = "src/background.png")
+        self.filename = PhotoImage(file = "C:\Users\venka\Desktop\DashboardDoctorT\img\background.png")
         self.background_label = Label(self.root, image=self.filename)
         self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
@@ -241,7 +241,7 @@ class App:
         
 
         self.C = Canvas(root, bg="blue", height=200, width=300)
-        self.filename = PhotoImage(file = "background.png")
+        self.filename = PhotoImage(file = "C:\Users\venka\Desktop\DashboardDoctorT\img\background.png")
         self.background_label = Label(root, image=self.filename)
         self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
@@ -301,7 +301,7 @@ class App:
         customtkinter.set_appearance_mode("light")
         customtkinter.set_default_color_theme("blue")
 
-        self.filename = PhotoImage(file = "smaller.png")
+        self.filename = PhotoImage(file = "img\\smaller.png")
         self.background_label = Label(self.root, image=self.filename)
         self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
@@ -396,7 +396,7 @@ class App:
         customtkinter.set_default_color_theme("blue")
 
 
-        self.filename = PhotoImage(file = "searchPage.png")
+        self.filename = PhotoImage(file = "img\\searchPage.png")
         self.background_label = Label(self.root, image=self.filename)
         self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
@@ -452,7 +452,7 @@ class App:
         ######## INFO FRAME ##################
 
         self.InfoFrame = customtkinter.CTkFrame(self.root, width = 450, height = 750, fg_color= "#F0FFFF")
-        self.conn = sqlite3.connect("records.db")
+        self.conn = sqlite3.connect("db\\records.db")
         self.cursor = self.conn.cursor()
 
         self.cursor.execute("SELECT * FROM patient_list WHERE uniqueid = ?", (unique,))
@@ -511,15 +511,15 @@ class App:
         self.ResetDeviceButton = customtkinter.CTkButton(self.ButtonFrame, text = "Reset Device", fg_color = "#0096FF", text_font = ("Oswald", 10), text_color = "black")
         self.ResetDeviceButton.grid(row = 1, column = 2, pady = 20, padx = 40)
 
-        self.NormalImage = PhotoImage(file = "normal.png")
+        self.NormalImage = PhotoImage(file = "img\\normal.png")
         self.NormalLabel = customtkinter.CTkButton(self.ButtonFrame, text = "Normal", fg_color = "#0096FF", image = self.NormalImage, text_font = ("Oswald", 10), text_color = "black")
         self.NormalLabel.grid(row = 2, column = 0, pady = 20, padx = 40)
 
-        self.MediumImage = PhotoImage(file = "medium.png")
+        self.MediumImage = PhotoImage(file = "img\\medium.png")
         self.MediumLabel = customtkinter.CTkButton(self.ButtonFrame, text = "Medium", fg_color = "#0096FF", image = self.MediumImage, text_font = ("Oswald", 10), text_color = "black")
         self.MediumLabel.grid(row = 2, column = 1, pady = 20, padx = 40)
 
-        self.HeavyImage = PhotoImage(file = "heavy.png")
+        self.HeavyImage = PhotoImage(file = "img\\heavy.png")
         self.HeavyLabel = customtkinter.CTkButton(self.ButtonFrame, text = "Heavy", fg_color = "#0096FF", image = self.HeavyImage, text_font = ("Oswald", 10), text_color = "black")
         self.HeavyLabel.grid(row = 2, column = 2, pady = 20, padx = 40)
 
@@ -531,11 +531,11 @@ class App:
         ############################### Save and Analyze and Back Buttons Frame ######################################
         self.FrameBack = customtkinter.CTkFrame(self.root, width = 200, height = 200, fg_color = "#F0FFFF")
 
-        self.AnalyzeImage = PhotoImage(file = "analyze_save.png")
+        self.AnalyzeImage = PhotoImage(file = "img\\analyze_save.png")
         self.AnalyzeButton = customtkinter.CTkButton(self.FrameBack, text = "Analyze And Save", text_color = "black", fg_color = "#0096FF", image = self.AnalyzeImage, text_font = ("Oswald", 10), command = lambda: self.analysisReport(unique))
         self.AnalyzeButton.grid(row = 0, column = 0, padx = 10, ipadx = 5, ipady = 5)
 
-        self.BackImage = PhotoImage(file = "back_arrow.png")
+        self.BackImage = PhotoImage(file = "img\\back_arrow.png")
         self.BackButton = customtkinter.CTkButton(self.FrameBack, text = "Back To Search", text_color = "black", fg_color = "#0096FF", image = self.BackImage, text_font = ("Oswald", 10), command = self.searchPage)
         self.BackButton.grid(row = 0, column = 1, padx = 10, ipadx = 5, ipady = 5)
 
@@ -552,7 +552,7 @@ class App:
         customtkinter.set_default_color_theme("blue")
 
 
-        self.conn = sqlite3.connect("records.db")
+        self.conn = sqlite3.connect("db\\records.db")
         self.cursor = self.conn.cursor()
         self.cursor.execute("SELECT * FROM patient_list")
         self.item = self.cursor.fetchall()[0]
@@ -602,7 +602,7 @@ class App:
 
         self.frame2 = customtkinter.CTkFrame(root, width = 600, height = 600, fg_color = "#F0FFFF")
 
-        self.filename = ImageTk.PhotoImage(file = "resized_plot1.png")
+        self.filename = ImageTk.PhotoImage(file = "img\\resized_plot1.png")
         self.background_label = Label(self.frame2, image = self.filename)
 
         self.background_label.grid(row = 0, column = 0)
@@ -699,7 +699,7 @@ class App:
 
 
 
-root = Tk()
+root = customtkinter.CTk()
 App(root)
 root.mainloop()
 

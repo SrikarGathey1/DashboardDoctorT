@@ -9,30 +9,36 @@ c = conn.cursor()
 # c.execute("INSERT INTO account VALUES(?, ?)", ('venkatnaras123@gmail.com', 'BossFan123'))
 
 
-c.execute("SELECT * FROM patient_list WHERE uniqueid = ?", ("01720000239",))
 
-print(c.fetchall())
-
-# c.execute("""CREATE TABLE IF NOT EXISTS patient_list(uniqueid TEXT PRIMARY KEY, name TEXT, phone INTEGER, weight INTEGER, height INTEGER, gender TEXT, day INTEGER, month INTEGER, year INTEGER)""")
+# c.execute("""CREATE TABLE IF NOT EXISTS patient_list(uniqueid TEXT PRIMARY KEY, email TEXT, fname TEXT, mname TEXT, lname TEXT, phone INTEGER, weight INTEGER, height INTEGER, gender TEXT, day INTEGER, month INTEGER, year INTEGER)""")
 # Order:
 # 1. uniqueid text
-# 2. name text
-# 3. phone int
-# 4. weight int 
-# 5. height int
-# 6. gender text
-# 7. day int
-# 8. month int
-# 9. year int
+# 2. email text
+# 3. fname text
+# 4. mname text
+# 5. lname text 
+# 6. phone int
+# 7. weight int
+# 8. height int
+# 9. gender int
+# 10. day int
+# 11. month int
+# 12. year int
 
-# c.execute("INSERT INTO patient_list VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)", ("01720000239", "Srikar Gade", 9597216381, 76, 182, "Male", 17, 4, 2000))
+
+# c.execute("INSERT INTO patient_list VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", ("P984770498710", "venkatnaras123@gmail.com", "Srikar", "", "Gade", 9597216381, 76, 182, "Male", 17, 4, 2000))
 
 # c.execute("SELECT * FROM patient_list")
 # for item in c.fetchall():
-#    print(item)
-  #  break
+#  print(item)
 
-# conn.commit()
+c.execute("DELETE FROM patient_list WHERE email = ?", ("srikar.thinktankers@gmail.com", ))
+
+c.execute("SELECT * FROM patient_list")
+for item in c.fetchall():
+  print(item)
+
+conn.commit()
  
 
 

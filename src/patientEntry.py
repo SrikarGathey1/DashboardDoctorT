@@ -26,12 +26,22 @@ class App:
         customtkinter.set_appearance_mode("dark")
         customtkinter.set_default_color_theme("blue")
         self.radio_var = IntVar()
+        self.loginPage()
         # Create a main frame
+
+
+    def loginPage(self):
+        for i in self.root.winfo_children():
+            i.destroy()
+
+        customtkinter.set_appearance_mode("dark")
+        customtkinter.set_default_color_theme("blue")
+
         self.main_frame = customtkinter.CTkFrame(self.root, bg_color = "#2a2d2e", fg_color = "#2a2d2e")
         self.main_frame.pack(fill = BOTH, expand = 1)
 
         # Create a canvas
-        self.my_canvas = Canvas(self.main_frame, bg = "#2a2d2e")
+        self.my_canvas = Canvas(self.main_frame, bg = "#2a2d2e", scrollregion = (0,0,2000,3200))
         self.my_canvas.pack(side = LEFT, fill = BOTH, expand = 1)
 
         # Create a scrollbar
@@ -42,13 +52,46 @@ class App:
         # Configure Canvas
         self.my_canvas.configure(yscrollcommand = self.myScrollBar, bg = "#2a2d2e", highlightthickness = 0)
         # self.my_canvas.bind_all("<MouseWheel>", lambda e: self.my_canvas.yview_scroll(-1 * int((e.delta / 120)), "units"))
-        self.my_canvas.bind("<Configure>", lambda e: self.my_canvas.configure(scrollregion=self.my_canvas.bbox("all")))
+        self.my_canvas.bind_all("<Configure>", lambda e: self.my_canvas.configure(scrollregion=self.my_canvas.bbox("all")))
 
-        # Create Another Frame inside the canvas
+        # Create Another Frame ins
+        # \ide the canvas
         self.secondFrame = customtkinter.CTkFrame(self.my_canvas)
         self.my_canvas.create_window((0, 0), window = self.secondFrame, anchor ="nw")
-        self.registerPatient(self.root)
-    
+
+        self.LoginFrame = customtkinter.CTkFrame(self.secondFrame, width = 750, height = 750)
+
+
+        # Title Label
+        self.TitleLabel = customtkinter.CTkLabel(self.LoginFrame, text = "Doctor T", text_color = "#0096FF")
+        self.TitleLabel.configure(font = ("Pacifico", 25))
+        self.TitleLabel.grid(column = 0, row = 1, columnspan = 2, pady = (25, 25))
+
+
+        # Username and Entry Box
+        self.Label1 = customtkinter.CTkLabel(self.LoginFrame, text = "Username")
+        self.Label1.grid(column = 0, row = 2, pady = (25, 0), padx = (25, 0))
+        self.username = customtkinter.CTkEntry(self.LoginFrame, width = 350)
+        self.username.grid(column = 1, row = 2, pady = (25, 0), padx = (0, 100))
+
+
+        # Password and Entry Box
+        self.Label2 = customtkinter.CTkLabel(self.LoginFrame, text = "Password")
+        self.Label2.grid(column = 0, row = 3, pady = (25, 0), padx = (25, 0))
+        self.password = customtkinter.CTkEntry(self.LoginFrame, width = 350, show = "*")
+        self.password.grid(column = 1, row = 3, pady = (25, 0), padx = (0, 100))  
+
+        # Login Button
+        self.Button1 = customtkinter.CTkButton(self.LoginFrame, text = "Log In")
+        self.Button1.grid(row = 5, column = 0, pady = (50, 40), padx = (150, 0), sticky = NE)
+
+        # Register Button
+        self.Button2 = customtkinter.CTkButton(self.LoginFrame, text = "Register", command = lambda: self.registerPatient(self.root))
+        self.Button2.grid(row = 5, column = 1, pady = (50, 40))
+
+        self.LoginFrame.grid(row = 2, column = 0, pady = 100, padx = (400, 0))
+        # self.root.eval('tk::PlaceWindow . center')
+        
 
     def removeLabel(self, Label):
         Label.grid_remove()
@@ -61,7 +104,7 @@ class App:
         self.otpgen = randint(100000, 999999)
 
         port = 465
-        password = "fbqzdsujolwqhutv"
+        password = "hpykhkzwafrrupny"
         email = "doctortdonotreply@gmail.com"
         message = "Your OTP for email ID verification is " + str(self.otpgen) + ". Please enter this OTP where prompted."
 
@@ -73,7 +116,7 @@ class App:
 
 
     def successfulMessage(self, reciever, uniqueid):
-        message = "Your Unique ID for Doctor T is " + uniqueid + "." + " Please save this information for future reference."
+        message = "Dear User, Your Unique ID for Doctor T Registration is " + uniqueid + "." + " Please save this information for future reference."
         port = 465
         password = "fbqzdsujolwqhutv"
         email = "doctortdonotreply@gmail.com"
@@ -190,6 +233,32 @@ class App:
 
 
     def registerPatient(self, root):
+        for i in self.root.winfo_children():
+            i.destroy()
+    
+        self.main_frame = customtkinter.CTkFrame(self.root, bg_color = "#2a2d2e", fg_color = "#2a2d2e")
+        self.main_frame.pack(fill = BOTH, expand = 1)
+
+        # Create a canvas
+        self.my_canvas = Canvas(self.main_frame, bg = "#2a2d2e")
+        self.my_canvas.pack(side = LEFT, fill = BOTH, expand = 1)
+
+        # Create a scrollbar
+        self.myScrollBar = ttk.Scrollbar(self.main_frame, orient = VERTICAL, command = self.my_canvas.yview)
+        # self.myScrollBar = customtkinter.CTkScrollbar(self.main_frame, orientation="vertical", command=self.my_canvas.yview, width=20, height = 50, corner_radius=10)
+        self.myScrollBar.pack(side = RIGHT, fill = Y)
+
+        # Configure Canvas
+        self.my_canvas.configure(yscrollcommand = self.myScrollBar, bg = "#2a2d2e", highlightthickness = 0)
+        # self.my_canvas.bind_all("<MouseWheel>", lambda e: self.my_canvas.yview_scroll(-1 * int((e.delta / 120)), "units"))
+        self.my_canvas.bind_all("<Configure>", lambda e: self.my_canvas.configure(scrollregion=self.my_canvas.bbox("all")))
+
+        # Create Another Frame ins
+        # \ide the canvas
+        self.secondFrame = customtkinter.CTkFrame(self.my_canvas)
+        self.my_canvas.create_window((0, 0), window = self.secondFrame, anchor ="nw")
+
+    
         self.radio_var = IntVar()
         self.check_var = IntVar()
 

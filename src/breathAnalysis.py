@@ -1,123 +1,169 @@
-import sqlite3
+from telnetlib import DO
 from tkinter import *
-from turtle import bgcolor, color
-from PIL import *
+from tkinter import messagebox
+from tkinter import ttk
+import tkinter
+from tkinter import font
+from PIL import ImageFont, ImageTk, Image
+from turtle import color
 import customtkinter
+import sqlite3
+from re import fullmatch
+from re import compile
+from re import match
+import smtplib, ssl
+from uniqueid import *
 
-root = Tk()
-root.configure(bg = "white")
-
-
-customtkinter.set_appearance_mode("light")
-customtkinter.set_default_color_theme("dark-blue")
-
-######### TITLE FRAME #################
-
-TitleFrame = customtkinter.CTkFrame(root, width = 50, height = 50, bg_color = "white", fg_color = "white")
-
-TitleLabel = customtkinter.CTkLabel(TitleFrame, text = "BREATH ANALYSIS", text_color = "black")
-TitleLabel.configure(font = ("Oswald", 15))
-TitleLabel.grid(column = 0, row = 0, rowspan = 3, pady = (10, 10), ipadx = 5, ipady = 5)
-
-
-TitleFrame.pack(padx = 100, pady = 10)
-
-
-######## INFO FRAME ##################
-
-InfoFrame = customtkinter.CTkFrame(root, width = 450, height = 750, bg_color = "white", fg_color = "white")
-
-conn = sqlite3.connect("records.db")
-cursor = conn.cursor()
-
-cursor.execute("SELECT * FROM patient_list")
-for item in cursor.fetchall():
-    break
+class App:
+    def __init__(self, root):
+        self.root = root
+        self.otpgen = 0
+        self.root.title("Doctor T")
+        customtkinter.set_appearance_mode("dark")
+        customtkinter.set_default_color_theme("blue")
+        self.radio_var = IntVar()
+        self.valueMonth = [str(i) for i in range(1, 13)]
+        self.valueDays = [str(i) for i in range(1, 32)]
+        self.valueYears = [str(i) for i in range(1970, 2022)]
+        self.unique = "P984770498710" 
+        self.breathAnalyze(self.unique)
+        # Create a main frame
 
 
-patientNo = customtkinter.CTkLabel(InfoFrame, text = "Patient No: " + item[0])
-patientNo.configure(font = ("Oswald", 10))
-patientNo.grid(row = 0, column = 1, pady = 10, padx = 10)
+    def breathAnalyze(self, unique):
 
-patientName = customtkinter.CTkLabel(InfoFrame, text = item[1])
-patientName.configure(font = ("Oswald", 20))
-patientName.grid(row = 1, column = 0, columnspan = 2,  pady = 10)
-
-Age = customtkinter.CTkLabel(InfoFrame, text = str(2022 - item[-1]) + " years")
-Age.configure(font = ("Oswald", 10))
-Age.grid(row = 1, column = 2, pady = 10, padx = 10)
-
-Gender = customtkinter.CTkLabel(InfoFrame, text = item[5])
-Gender.configure(font = ("Oswald", 10))
-Gender.grid(row = 2, column = 0, pady = 10, padx = 10)
-
-Height = customtkinter.CTkLabel(InfoFrame, text = str(item[4]) + "cms")
-Height.configure(font = ("Oswald", 10))
-Height.grid(row = 2, column = 1, pady = 10, padx = 10)
-
-Weight = customtkinter.CTkLabel(InfoFrame, text = str(item[3]) + "Kgs")
-Weight.configure(font = ("Oswald", 10))
-Weight.grid(row = 2, column = 2, pady = 10, padx = 10)
+        for i in self.root.winfo_children():
+            i.destroy()
 
 
-InfoFrame.pack(pady = (50, 100), padx = (10, 10))
+        self.main_frame = customtkinter.CTkFrame(self.root, bg_color = "#2a2d2e", fg_color = "#2a2d2e")
+        self.main_frame.pack(fill = BOTH, expand = 1)
 
-############ Buttons Frame ####################
+        # Create a canvas
+        self.my_canvas = Canvas(self.main_frame, bg = "#2a2d2e")
+        self.my_canvas.pack(side = LEFT, fill = BOTH, expand = 1)
 
-ButtonFrame = customtkinter.CTkFrame(root, width = 150, height = 400, fg_color = "white")
+        # Create a scrollbar
+        self.myScrollBar = ttk.Scrollbar(self.main_frame, orient = VERTICAL, command = self.my_canvas.yview)
+        # self.myScrollBar = customtkinter.CTkScrollbar(self.main_frame, orientation="vertical", command=self.my_canvas.yview, width=20, height = 50, corner_radius=10)
+        self.myScrollBar.pack(side = RIGHT, fill = Y)
 
-DeviceLabel = customtkinter.CTkLabel(ButtonFrame, text = "Select DrT Device:")
-DeviceLabel.configure(font = ("Oswald", 10))
-DeviceLabel.grid(row = 0, column = 0, pady = 20, padx = 20)
+        # Configure Canvas
+        self.my_canvas.configure(yscrollcommand = self.myScrollBar, bg = "#2a2d2e", highlightthickness = 0)
+        # self.my_canvas.bind_all("<Configure>", lambda e: self.my_canvas.yview_scroll(-1 * int((e.delta / 120)), "units"))
+        self.my_canvas.bind_all("<Configure>", lambda e: self.my_canvas.configure(scrollregion=self.my_canvas.bbox("all")))
 
+        # Create Another Frame ins
+        # Hide the canvas
+        self.secondFrame = customtkinter.CTkFrame(self.my_canvas)
+        self.my_canvas.create_window((0, 0), window = self.secondFrame, anchor ="nw")
 
-DropDown = customtkinter.CTkOptionMenu(ButtonFrame, values = ["DR-T-ALPHA01", "DR-T-BETA01"], fg_color = "white", button_color = "#0096FF")
-DropDown.grid(row = 0, column = 1, pady = 20, padx = 40)
+        ########################### TITLE FRAME #######################################################
 
-SetDeviceLabel = customtkinter.CTkButton(ButtonFrame, text = "Set Device", fg_color = "#0096FF", text_font = ("Oswald", 10))
-SetDeviceLabel.grid(row = 0, column = 2, pady = 20, padx = 40)
+        self.TitleFrame = customtkinter.CTkFrame(self.secondFrame, width = 50, height = 50, fg_color = "#212325")
 
-DurationLabel = customtkinter.CTkLabel(ButtonFrame, text = "Duration(Secs):")
-DurationLabel.configure(font = ("Oswald", 10))
-DurationLabel.grid(row = 1, column = 0, pady = 20, padx = 40)
+        self.TitleLabel = customtkinter.CTkLabel(self.TitleFrame, text = "BREATH ANALYSIS")
+        self.TitleLabel.configure(font = ("Oswald", 15))
+        self.TitleLabel.grid(column = 0, row = 0, rowspan = 3, pady = (10, 10), ipadx = 5, ipady = 5)
 
-TimeDropDown = customtkinter.CTkOptionMenu(ButtonFrame, values = ["10", "20", "30"], fg_color = "white", button_color = "#0096FF")
-TimeDropDown.grid(row = 1, column = 1, pady = 20, padx = 40)
-
-ResetDeviceButton = customtkinter.CTkButton(ButtonFrame, text = "Reset Device", fg_color = "#0096FF", text_font = ("Oswald", 10))
-ResetDeviceButton.grid(row = 1, column = 2, pady = 20, padx = 40)
-
-NormalImage = PhotoImage(file = "normal.png")
-NormalLabel = customtkinter.CTkButton(ButtonFrame, text = "Normal", fg_color = "#0096FF", image = NormalImage, text_font = ("Oswald", 10))
-NormalLabel.grid(row = 2, column = 0, pady = 20, padx = 40)
-
-MediumImage = PhotoImage(file = "medium.png")
-MediumLabel = customtkinter.CTkButton(ButtonFrame, text = "Medium", fg_color = "#0096FF", image = MediumImage, text_font = ("Oswald", 10))
-MediumLabel.grid(row = 2, column = 1, pady = 20, padx = 40)
-
-HeavyImage = PhotoImage(file = "heavy.png")
-HeavyLabel = customtkinter.CTkButton(ButtonFrame, text = "Heavy", fg_color = "#0096FF", image = HeavyImage, text_font = ("Oswald", 10))
-HeavyLabel.grid(row = 2, column = 2, pady = 20, padx = 40)
+        self.TitleFrame.pack(padx = 100, pady = 10)
 
 
-ButtonFrame.pack(pady = (0, 50), padx = (10, 10))
+        ########################## INFO FRAME #########################################################
 
-############################### TIMER FRAME ##################################################
+        self.InfoFrame = customtkinter.CTkFrame(self.secondFrame, width = 450, height = 750, fg_color = "#212325")
+        self.conn = sqlite3.connect("records.db")
+        self.cursor = self.conn.cursor()
 
-############################### Save and Analyze and Back Buttons Frame ######################################
-FrameBack = customtkinter.CTkFrame(root, width = 200, height = 200, fg_color = "white")
-
-AnalyzeImage = PhotoImage(file = "analyze_save.png")
-AnalyzeButton = customtkinter.CTkButton(FrameBack, text = "Analyze And Save", fg_color = "#0096FF", image = AnalyzeImage, text_font = ("Oswald", 10))
-AnalyzeButton.grid(row = 0, column = 0, padx = 10, ipadx = 5, ipady = 5)
-
-BackImage = PhotoImage(file = "back_arrow.png")
-BackButton = customtkinter.CTkButton(FrameBack, text = "Back To Search", fg_color = "#0096FF", image = BackImage, text_font = ("Oswald", 10))
-BackButton.grid(row = 0, column = 1, padx = 10, ipadx = 5, ipady = 5)
-
-FrameBack.pack(padx = 200)
+        self.cursor.execute("SELECT * FROM patient_list WHERE uniqueid = ?", (unique,))
+        item = self.cursor.fetchall()[0]
 
 
+        self.patientNo = customtkinter.CTkLabel(self.InfoFrame, text = "Patient No: " + item[0])
+        self.patientNo.configure(font = ("Oswald", 10))
+        self.patientNo.grid(row = 0, column = 1, pady = 10, padx = 10)
 
+        self.patientName = customtkinter.CTkLabel(self.InfoFrame, text = item[2])
+        self.patientName.configure(font = ("Oswald", 20))
+        self.patientName.grid(row = 1, column = 0, columnspan = 2,  pady = 10)
+
+        self.Age = customtkinter.CTkLabel(self.InfoFrame, text = str(2022 - item[-1]) + " years")
+        self.Age.configure(font = ("Oswald", 10))
+        self.Age.grid(row = 1, column = 2, pady = 10, padx = 10)
+
+        self.Gender = customtkinter.CTkLabel(self.InfoFrame, text = item[8])
+        self.Gender.configure(font = ("Oswald", 10))
+        self.Gender.grid(row = 2, column = 0, pady = 10, padx = 10)
+
+        self.Height = customtkinter.CTkLabel(self.InfoFrame, text = str(item[7]) + "cms")
+        self.Height.configure(font = ("Oswald", 10))
+        self.Height.grid(row = 2, column = 1, pady = 10, padx = 10)
+
+        self.Weight = customtkinter.CTkLabel(self.InfoFrame, text = str(item[6]) + "Kgs")
+        self.Weight.configure(font = ("Oswald", 10))
+        self.Weight.grid(row = 2, column = 2, pady = 10, padx = 10)
+
+
+        self.InfoFrame.pack(pady = (50, 100), padx = (10, 10))
+
+        ############ Buttons Frame ####################
+
+        self.ButtonFrame = customtkinter.CTkFrame(self.secondFrame, width = 150, height = 400, fg_color = "#212325")
+
+        self.DeviceLabel = customtkinter.CTkLabel(self.ButtonFrame, text = "Select DrT Device:")
+        self.DeviceLabel.configure(font = ("Oswald", 10))
+        self.DeviceLabel.grid(row = 0, column = 0, pady = 20, padx = 20)
+
+
+        self.DropDown = customtkinter.CTkOptionMenu(self.ButtonFrame, values = ["DR-T-ALPHA01", "DR-T-BETA01"], button_color = "#0096FF")
+        self.DropDown.grid(row = 0, column = 1, pady = 20, padx = 40)
+
+        self.SetDeviceLabel = customtkinter.CTkButton(self.ButtonFrame, text = "Set Device", fg_color = "#0096FF", text_font = ("Oswald", 10))
+        self.SetDeviceLabel.grid(row = 0, column = 2, pady = 20, padx = 40)
+
+        self.DurationLabel = customtkinter.CTkLabel(self.ButtonFrame, text = "Duration(Secs):")
+        self.DurationLabel.configure(font = ("Oswald", 10))
+        self.DurationLabel.grid(row = 1, column = 0, pady = 20, padx = 40)
+
+        self.TimeDropDown = customtkinter.CTkOptionMenu(self.ButtonFrame, values = ["10", "20", "30"], button_color = "#0096FF")
+        self.TimeDropDown.grid(row = 1, column = 1, pady = 20, padx = 40)
+
+        self.ResetDeviceButton = customtkinter.CTkButton(self.ButtonFrame, text = "Reset Device", fg_color = "#0096FF", text_font = ("Oswald", 10))
+        self.ResetDeviceButton.grid(row = 1, column = 2, pady = 20, padx = 40)
+
+        self.NormalImage = PhotoImage(file = "normal.png")
+        self.NormalLabel = customtkinter.CTkButton(self.ButtonFrame, text = "Normal", fg_color = "#0096FF", image = self.NormalImage, text_font = ("Oswald", 10))
+        self.NormalLabel.grid(row = 2, column = 0, pady = 20, padx = 40)
+
+        self.MediumImage = PhotoImage(file = "medium.png")
+        self.MediumLabel = customtkinter.CTkButton(self.ButtonFrame, text = "Medium", fg_color = "#0096FF", image = self.MediumImage, text_font = ("Oswald", 10))
+        self.MediumLabel.grid(row = 2, column = 1, pady = 20, padx = 40)
+
+        self.HeavyImage = PhotoImage(file = "heavy.png")
+        self.HeavyLabel = customtkinter.CTkButton(self.ButtonFrame, text = "Heavy", fg_color = "#0096FF", image = self.HeavyImage, text_font = ("Oswald", 10))
+        self.HeavyLabel.grid(row = 2, column = 2, pady = 20, padx = 40)
+
+
+        self.ButtonFrame.pack(pady = (0, 50), padx = (10, 10))
+
+        ############################### TIMER FRAME ##################################################
+
+        ############################### Save and Analyze and Back Buttons Frame ######################################
+        self.FrameBack = customtkinter.CTkFrame(self.secondFrame, width = 200, height = 200, fg_color = "#212325")
+
+        self.AnalyzeImage = PhotoImage(file = "analyze_save.png")
+        self.AnalyzeButton = customtkinter.CTkButton(self.FrameBack, text = "Analyze And Save", text_color = "black", fg_color = "#0096FF", image = self.AnalyzeImage, text_font = ("Oswald", 10), command = lambda: self.analysisReport(unique))
+        self.AnalyzeButton.grid(row = 0, column = 0, padx = 10, ipadx = 5, ipady = 5)
+
+        self.BackImage = PhotoImage(file = "back_arrow.png")
+        self.BackButton = customtkinter.CTkButton(self.FrameBack, text = "Back To Search", text_color = "black", fg_color = "#0096FF", image = self.BackImage, text_font = ("Oswald", 10), command = self.searchPage)
+        self.BackButton.grid(row = 0, column = 1, padx = 10, ipadx = 5, ipady = 5)
+
+        self.FrameBack.pack(padx = 200)
+
+
+
+root = customtkinter.CTk()
+App(root)
 root.eval("tk::PlaceWindow . center")
 root.mainloop()
